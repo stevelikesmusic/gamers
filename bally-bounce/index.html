@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hiley's Way — Skylar's First Game</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game-screen" width="480" height="320"></canvas>
+    <script>
+      const canvas = document.getElementById("game-screen");
+      const ctx = canvas.getContext("2d");
+      const BALL_RADIUS = 50;
+
+      let ball = {
+        x: canvas.width / 2,
+        y: canvas.height - BALL_RADIUS,
+      };
+
+      let xPaddle = canvas.width / 2;
+      let yPaddle = canvas.height - 25;
+
+      function drawBall() {
+        ctx.beginPath();
+        // ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
+        // ctx.fillStyle = "#F9B877";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawPaddle() {
+        ctx.beginPath();
+        ctx.ellipse(xPaddle, yPaddle, 20, 75, Math.PI / 2, 0, 2 * Math.PI);
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawFrame() {
+        drawBall();
+        drawPaddle();
+      }
+
+      function handleMouseMove(e) {
+        if (e.)
+      }
+
+      setInterval(drawFrame, 10);
+    </script>
+  </body>
+</html>

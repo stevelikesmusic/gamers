@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hiley's Way — Skylar's First Game</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        background: #eee;
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 10px;
+      }
+
+      .controls {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+      }
+
+      button {
+        font-size: large;
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: 0;
+        color: white;
+        background-color: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game-screen" width="480" height="320"> </canvas>
+    <div class="controls">
+      <button id="reset">↻ Reset</button>
+    </div>
+
+    <script>
+      const $canvas = document.getElementById("game-screen");
+      const $resetButton = document.getElementById("reset");
+
+      const ctx = $canvas.getContext("2d");
+      const BALL_RADIUS = 70;
+      const states = {
+        playing: "playing",
+        gameOver: "game over",
+      };
+
+      let gameState = states.playing;
+      let timer;
+
+      let ball = {
+        x: $canvas.width / 2,
+        y: $canvas.height - BALL_RADIUS,
+      };
+
+      let birdImage;
+      let xBird = $canvas.width / 2 - 40;
+      let yBird = $canvas.height / 5;
+      let dxBird = 2;
+      let dyBird = 2;
+
+      const widthPaddle = 75;
+      let xPaddle = $canvas.width / 2;
+      let yPaddle = $canvas.height - 25;
+
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, Math.PI * 2);
+        ctx.fillStyle = "#F9B877";
+        ctx.fill();
+        ctx.clearPath();
+      }
+
+      function drawBird() {
+        if (!birdImage) {
+          birdImage = new Image();
+          birdImage.src = "static/bird.png";
+          birdImage.width = "50px";
+          birdImage.onload = () => ctx.drawImage(birdImage, xBird, yBird);
+        } else {
+          ctx.drawImage(birdImage, xBird, yBird);
+        }
+      }
+
+      function drawTrampolene() {
+        const PI = Math.PI;
+
+        ctx.beginPath();
+        ctx.ellipse(xPaddle, yPaddle, 15, widthPaddle, PI / 2, 0, PI * 2);
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawFrame() {
+        ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+        drawBird();
+        drawTrampolene();
+
+        // Bird falls past bottom
+        if (yBird > $canvas.height) {
+          clearInterval(timer);
+          alert("Game Over!!");
+        }
+
+        // Bird bounces off sides
+        if (xBird < 0 || xBird > $canvas.width - 40) {
+          dxBird = -dxBird;
+        }
+
+        // Bird bounces off top
+        if (yBird < 0) {
+          dyBird = -dyBird;
+        }
+
+        // Bird bounces off trampolene
+        if (
+          yBird > yPaddle - 45 &&
+          xBird > xPaddle - widthPaddle &&
+          xBird < xPaddle + widthPaddle
+        ) {
+          dyBird = -dyBird;
+        }
+
+        xBird += dxBird;
+        yBird += dyBird;
+      }
+
+      function handleInputMove(e) {
+        const relativeX = e.clientX - $canvas.offsetLeft;
+        if (relativeX > 0 && relativeX < $canvas.width) {
+          xPaddle = relativeX - widthPaddle / 2;
+        }
+      }
+
+      document.addEventListener("mousemove", handleInputMove, false);
+      document.addEventListener("touchmove", handleInputMove, false);
+
+      timer = setInterval(drawFrame, 10);
+    </script>
+  </body>
+</html>
