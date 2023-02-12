@@ -21,12 +21,14 @@
       }
 
       button {
+        visibility: hidden;
         font-size: large;
         padding: 10px 20px;
         border-radius: 6px;
         border: 0;
         color: white;
         background-color: purple;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -56,8 +58,10 @@
       };
 
       let birdImage;
-      let xBird = $canvas.width / 2 - 40;
-      let yBird = $canvas.height / 5;
+      const xStartBird = $canvas.width / 2 - 40;
+      const yStartBird = $canvas.height / 5;
+      let xBird = xStartBird;
+      let yBird = yStartBird;
       let dxBird = 2;
       let dyBird = 2;
 
@@ -102,6 +106,8 @@
         // Bird falls past bottom
         if (yBird > $canvas.height) {
           alert("Game Over!!");
+          gameState = states.gameOver;
+          $resetButton.style.visibility = "visible";
           return cancelAnimationFrame(animationFrame);
         }
 
@@ -138,8 +144,20 @@
         }
       }
 
+      function handleResetGame() {
+        if (gameState !== states.gameOver) return;
+
+        gameState = states.playing;
+        xBird = xStartBird;
+        yBird = yStartBird;
+        $resetButton.style.visibility = "hidden";
+
+        drawFrame();
+      }
+
       document.addEventListener("mousemove", handleInputMove, false);
       document.addEventListener("touchmove", handleInputMove, false);
+      $resetButton.addEventListener("click", handleResetGame, false);
 
       drawFrame();
     </script>
