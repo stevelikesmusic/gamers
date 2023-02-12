@@ -48,7 +48,7 @@
       };
 
       let gameState = states.playing;
-      let timer;
+      let animationFrame;
 
       let ball = {
         x: $canvas.width / 2,
@@ -101,8 +101,8 @@
 
         // Bird falls past bottom
         if (yBird > $canvas.height) {
-          clearInterval(timer);
           alert("Game Over!!");
+          return cancelAnimationFrame(animationFrame);
         }
 
         // Bird bounces off sides
@@ -126,10 +126,13 @@
 
         xBird += dxBird;
         yBird += dyBird;
+
+        animationFrame = requestAnimationFrame(drawFrame);
       }
 
       function handleInputMove(e) {
-        const relativeX = e.clientX - $canvas.offsetLeft;
+        const { clientX } = e.clientX ? e : e.changedTouches[0];
+        const relativeX = clientX - $canvas.offsetLeft;
         if (relativeX > 0 && relativeX < $canvas.width) {
           xPaddle = relativeX - widthPaddle / 2;
         }
@@ -138,7 +141,7 @@
       document.addEventListener("mousemove", handleInputMove, false);
       document.addEventListener("touchmove", handleInputMove, false);
 
-      timer = setInterval(drawFrame, 10);
+      drawFrame();
     </script>
   </body>
 </html>
